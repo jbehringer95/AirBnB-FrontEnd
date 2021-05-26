@@ -16,12 +16,12 @@ import sklearn
 from app import app
 from pred_lists import zip_code, neighborhood, amenities, property
 from pred_lists import bathrooms_marks, amenities_marks
-from airbnb_model import *
+from Airbnb_models import *
 from model_tools_class import mt
 
 
 # load model trained on airbnb data
-model = keras.models.load_model('airbnb_model')
+model = keras.models.load_model('Airbnb_models')
 oe = mt.get_oe()
 print('Model loaded successfully')
 
