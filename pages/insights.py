@@ -8,22 +8,22 @@ import json
 from pred_lists import zip_code
 from os import getenv
 
-token = "pk.eyJ1Ijoicm93aXR0IiwiYSI6ImNrcDR4NHpzeDA1eDgybnA5bm42enhuYW0ifQ.W4P1yyHS0GIiEi6IGNkobg" # you will need your own token
+# Should obscure token, not sure how to manage that with different git users
+token = "pk.eyJ1Ijoicm93aXR0IiwiYSI6ImNrcDR4NHpzeDA1eDgybnA5bm42enhuYW0ifQ.W4P1yyHS0GIiEi6IGNkobg"
 
-df = px.data.election()
+# geoJSON & csv for DataFrame stored in page, not ideal
 df2 = pd.read_csv('assets/train.csv',
                     dtype={'zipcode':str})
-geojson = px.data.election_geojson()
 geojson2 = 'assets/GeoCells.json'
 with open(geojson2) as f:
     data = json.load(f)
-candidates = df.winner.unique()
+
 
 
 from app import app
 
-
-
+# I/O for choropleth.  Updates focus location based on dropdown input.
+# Throws error when user cancels while loading
 @app.callback(
     Output("choropleth", "figure"), 
     [Input("zipcode", "value")])
@@ -48,35 +48,21 @@ def display_choropleth(value):
     return fig
 
 
-
+# Layout of the page, dropdown and graph
 layout = html.Div([
     html.P("Rental Zip Code:"),
     dcc.Dropdown(
         id='zipcode', 
         options=zip_code.total_zip,
         value=zip_code.total_zip[1]['value']
-        #labelStyle={'display': 'inline-block'}
     ),
     dcc.Graph(id="choropleth"),
 ])
 
 
+# Matches lat/long with zipcode
 def check(inp):
-
     one = df2.loc[df2.zipcode == str(inp)]
     olat = one['latitude']
     olong = one['longitude']
     return olat, olong
-
-
-# # 
-
-
-
-
-    #     dcc.Markdown("##### Zipcode", className='mb-1'),
-    # dcc.Dropdown(
-    #     id='zipcode',
-    #     options=zip_code.total_zip,
-    #     className='mb-4'
-    # ),
